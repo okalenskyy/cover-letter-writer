@@ -13,8 +13,8 @@ def chunkerize(text, max_tokens, tokenizer):
 # Show title and description.
 st.title("Cover letter Agent")
 
-st.info("Please input your API key to continue.", icon="🗝️")
-os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
+# st.info("Please input your API key to continue.", icon="🗝️")
+# os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
 
 # Load the text generation model from Hugging Face
 # try: 
