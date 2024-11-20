@@ -13,6 +13,11 @@ def chunkerize(text, max_tokens, tokenizer):
 # Show title and description.
 st.title("Cover letter Agent")
 
+# Hugging Face authentication
+HUGGING_FACE_TOKEN = "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"  # Replace with your actual Hugging Face token
+os.environ["HUGGING_FACE_HUB_TOKEN"] = HUGGING_FACE_TOKEN
+
+
 # st.info("Please input your API key to continue.", icon="🗝️")
 # os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
 
