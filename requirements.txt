@@ -6,4 +6,3 @@ tensorflow
 transformers
 PyPDF2
 tf-keras
-os
