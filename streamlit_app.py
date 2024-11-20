@@ -7,7 +7,7 @@
 # import cv2
 
 import streamlit as st
-import pytorch
+import torch
 from transformers import pipeline
 import openai as ai
 from PyPDF2 import PdfReader

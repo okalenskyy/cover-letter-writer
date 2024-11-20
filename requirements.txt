@@ -1,6 +1,6 @@
 streamlit
 openai
 requests
-pytorch
+torch
 transformers
 PyPDF2
