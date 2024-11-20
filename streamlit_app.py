@@ -25,7 +25,7 @@ generator = pipeline('text-generation', model='EleutherAI/gpt-neo-2.7B')
 #####--
 
 # Set your OpenAI API key
-ai.api_key = st.text_input("Tocken", type="password")
+# ai.api_key = st.text_input("Tocken", type="password")
 
 #CV input
 res_format = st.radio(
