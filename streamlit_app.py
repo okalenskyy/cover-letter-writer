@@ -1,53 +1,96 @@
+# import streamlit as st
+# from openai import OpenAI
+
+# import json
+# import requests
+# import time
+# import cv2
+
 import streamlit as st
-from openai import OpenAI
+from transformers import pipeline
+import openai as ai
+from PyPDF2 import PdfReader
+
 
 # Show title and description.
-st.title("📄 Document question answering")
+st.title("Cover letter Agent")
 st.write(
-    "Upload a document below and ask a question about it – GPT will answer! "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-)
+     "To use this app, you need to provide an OpenAI API key, which you can get [here](https://). "
+ )
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
+# Set your OpenAI API key
+ai.api_key = st.text_input("Tocken", type="password")
+
+#CV input
+res_format = st.radio(
+    "Do you want to upload or paste your CV",
+    ('Upload', 'Paste'))
+if res_format == 'Upload':
+    res_file = st.file_uploader(' Upload your CV in pdf format')
+    if res_file:
+        pdf_reader = PdfReader(res_file)
+        res_text = ""
+        for page in pdf_reader.pages:
+            res_text += page.extract_text()
 else:
+    res_text = st.text_input('Pasted CV elements')
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+#Additional CV information
+with st.form('input_form'):
+    job_desc = st.text_input('Pasted job description')
+    user_name = st.text_input('Your name')
+    company = st.text_input('Company name')
+    manager = st.text_input('Hiring manager')
+    role = st.text_input('Job title/role')
+    referral = st.text_input('How did you find out about this opportunity?')
+    ai_temp = st.number_input('AI Temperature (0.0-1.0) Input how creative the API can be', value=0.99)
+    submitted = st.form_submit_button("Generate Cover Letter")
 
-    # Let the user upload a file via `st.file_uploader`.
-    uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .md)", type=("txt", "md")
-    )
-
-    # Ask the user for a question via `st.text_area`.
-    question = st.text_area(
-        "Now ask a question about the document!",
-        placeholder="Can you give me a short summary?",
-        disabled=not uploaded_file,
-    )
-
-    if uploaded_file and question:
-
-        # Process the uploaded file and question.
-        document = uploaded_file.read().decode()
-        messages = [
-            {
-                "role": "user",
-                "content": f"Here's a document: {document} \n\n---\n\n {question}",
-            }
+#Set model
+if submitted:
+    completion = ai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        temperature=ai_temp,
+        messages=[
+            {"role": "user", "content": f"You will need to generate a cover letter based on specific resume and a job description"},
+            {"role": "user", "content": f"My resume text: {res_text}"},
+            # ... (include other user messages)
         ]
+    )
+    response_out = completion['choices'][0]['message']['content']
+    st.write(response_out)
 
-        # Generate an answer using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            stream=True,
-        )
+    # Download a txt file
+    st.download_button('Download the cover_letter', response_out)
 
-        # Stream the response to the app using `st.write_stream`.
-        st.write_stream(stream)
+
+
+
+
+# if not ai.api_key:
+#     st.info("Please add your tocken to continue.", icon="🗝️")
+# else:
+    
+#     headers = {"Authorization": f"Bearer {token_access}"}
+#     API_URL = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50"
+
+#     if uploaded_file and question:
+
+#         # Process the uploaded file and question.
+#         document = uploaded_file.read().decode()
+#         messages = [
+#             {
+#                 "role": "user",
+#                 "content": f"Here's a document: {document} \n\n---\n\n {question}",
+#             }
+#         ]
+
+#         # Generate an answer using the OpenAI API.
+#         stream = client.chat.completions.create(
+#             model="gpt-3.5-turbo",
+#             messages=messages,
+#             stream=True,
+#         )
+
+#         # Stream the response to the app using `st.write_stream`.
+#         st.write_stream(stream)

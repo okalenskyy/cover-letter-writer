@@ -1,2 +1,8 @@
 streamlit
 openai
+json
+requests
+time
+cv2
+transformers
+PyPDF2
