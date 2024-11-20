@@ -1,7 +1,6 @@
-
 import streamlit as st
 import torch
-# import os
+import os
 from transformers import AutoTokenizer
 from transformers import pipeline
 import openai as ai
@@ -14,14 +13,14 @@ def chunkerize(text, max_tokens, tokenizer):
 # Show title and description.
 st.title("Cover letter Agent")
 
-# st.info("Please input your API key to continue.", icon="🗝️")
-# os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
+st.info("Please input your API key to continue.", icon="🗝️")
+os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
 
 # Load the text generation model from Hugging Face
-try: 
-    generator = pipeline("summarization", model="facebook/bart-large-cnn")
-except Exception as e:
-    st.error(f"Model can not be loaded. Error: {e}")
+# try: 
+#     generator = pipeline("summarization", model="facebook/bart-large-cnn")
+# except Exception as e:
+#     st.error(f"Model can not be loaded. Error: {e}")
 
 # CV input
 # res_format = st.radio(
@@ -53,6 +52,12 @@ with st.form('input_form'):
 if submitted:
 # if st.button("Generate Cover Letter"):
     with st.spinner("Writing..."):
+        # Load the text generation model from Hugging Face
+        try: 
+            generator = pipeline("summarization", model="facebook/bart-large-cnn")
+        except Exception as e:
+            st.error(f"Model can not be loaded. Error: {e}")
+
         try:
             # Tokenizer for splitting into manageable chunks
             tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
