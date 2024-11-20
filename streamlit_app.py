@@ -7,6 +7,7 @@
 # import cv2
 
 import streamlit as st
+import tensorflow
 from transformers import pipeline
 import openai as ai
 from PyPDF2 import PdfReader
