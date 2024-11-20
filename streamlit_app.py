@@ -7,17 +7,15 @@ from transformers import pipeline
 import openai as ai
 from PyPDF2 import PdfReader
 
-# Show title and description.
-st.title("Cover letter Agent")
-
 def chunkerize(text, max_tokens, tokenizer):
     tokens = tokenizer(text, return_tensors="pt")["input_ids"][0]
     return [tokens[i: i + max_tokens] for i in range(0, len(tokens), max_tokens)]
 
+# Show title and description.
+st.title("Cover letter Agent")
 
 # st.info("Please input your API key to continue.", icon="🗝️")
 # os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
-
 
 # Load the text generation model from Hugging Face
 try: 
