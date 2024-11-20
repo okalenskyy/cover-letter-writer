@@ -1,6 +1,6 @@
 streamlit
 openai
 requests
-tensorflow
+pytorch
 transformers
 PyPDF2
