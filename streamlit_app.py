@@ -14,9 +14,15 @@ from PyPDF2 import PdfReader
 
 # Show title and description.
 st.title("Cover letter Agent")
-st.write(
-     "To use this app, you need to provide an OpenAI API key, which you can get [here](https://). "
- )
+# st.write(
+#      "To use this app, you need to provide an OpenAI API key, which you can get [here](https://). "
+#  )
+
+#1 Load the text generation model from Hugging Face
+generator = pipeline('text-generation', model='EleutherAI/gpt-neo-2.7B')
+
+
+#####--
 
 # Set your OpenAI API key
 ai.api_key = st.text_input("Tocken", type="password")
@@ -48,17 +54,29 @@ with st.form('input_form'):
 
 #Set model
 if submitted:
-    completion = ai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        temperature=ai_temp,
-        messages=[
+    prompt = [
             {"role": "user", "content": f"You will need to generate a cover letter based on specific resume and a job description"},
             {"role": "user", "content": f"My resume text: {res_text}"},
             # ... (include other user messages)
         ]
-    )
-    response_out = completion['choices'][0]['message']['content']
+    
+    response_out = generator(prompt, max_length=2000, num_return_sequences=1)[0]['generated_text']
     st.write(response_out)
+
+
+
+# if submitted:
+#     completion = ai.ChatCompletion.create(
+#         model="gpt-3.5-turbo",
+#         temperature=ai_temp,
+#         messages=[
+#             {"role": "user", "content": f"You will need to generate a cover letter based on specific resume and a job description"},
+#             {"role": "user", "content": f"My resume text: {res_text}"},
+#             # ... (include other user messages)
+#         ]
+#     )
+#     response_out = completion['choices'][0]['message']['content']
+#     st.write(response_out)
 
     # Download a txt file
     st.download_button('Download the cover_letter', response_out)
