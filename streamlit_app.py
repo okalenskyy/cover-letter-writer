@@ -1,20 +1,31 @@
 
 import streamlit as st
 import torch
+import os
 from transformers import AutoTokenizer
 from transformers import pipeline
 import openai as ai
 from PyPDF2 import PdfReader
 
-
 # Show title and description.
 st.title("Cover letter Agent")
+
+def chunkerize(text, max_tokens, tokenizer):
+    tokens = tokenizer(text, return_tensors="pt")["input_ids"][0]
+    return [tokens[i: i + max_tokens] for i in range(0, len(tokens), max_tokens)]
+
+
+st.info("Please input your API key to continue.", icon="🗝️")
+os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
 
 # Set Tokenizer
 tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-2.7B")
 
 # Load the text generation model from Hugging Face
-generator = pipeline('text-generation', model='EleutherAI/gpt-neo-2.7B', tokenizer = tokenizer)
+try: 
+    generator = pipeline("summarization", model="facebook/bart-large-cnn")
+except Exception as e:
+    st.error(f"Model can not be loaded. Error: {e}")
 
 # CV input
 res_format = st.radio(
@@ -41,43 +52,53 @@ with st.form('input_form'):
     ai_temp = st.number_input('AI Temperature (0.0-1.0) Input how creative the API can be', value=0.99)
     submitted = st.form_submit_button("Generate Cover Letter")
 
-#Set model
+# ------------------------
+# Generate cover letter
 if submitted:
-    prompt = [
-                {"role": "user", "content" : f"You will need to generate a cover letter based on specific resume and a job description"},
-                {"role": "user", "content" : f"My resume text: {res_text}"},
-                {"role": "user", "content" : f"The job description is: {job_desc}"},
-                {"role": "user", "content" : f"The candidate's name to include on the cover letter: {user_name}"},
-                {"role": "user", "content" : f"The job title/role : {role}"},
-                {"role": "user", "content" : f"The hiring manager is: {manager}"},
-                {"role": "user", "content" : f"How you heard about the opportunity: {referral}"},
-                {"role": "user", "content" : f"The company to which you are generating the cover letter for: {company}"},
-                {"role": "user", "content" : f"The cover letter should have three content paragraphs"},
-                {"role": "user", "content" : f""" 
-                In the first paragraph focus on the following: you will convey who you are, what position you are interested in, and where you heard
-                about it, and summarize what you have to offer based on the above resume
-                """},
-                    {"role": "user", "content" : f""" 
-                In the second paragraph focus on why the candidate is a great fit drawing parallels between the experience included in the resume 
-                and the qualifications on the job description.
-                """},
-                        {"role": "user", "content" : f""" 
-                In the 3RD PARAGRAPH: Conclusion
-                Restate your interest in the organization and/or job and summarize what you have to offer and thank the reader for their time and consideration.
-                """},
-                {"role": "user", "content" : f""" 
-                note that contact information may be found in the included resume text and use and/or summarize specific resume context for the letter
-                    """},
-                {"role": "user", "content" : f"Use {user_name} as the candidate"},
-                
-                {"role": "user", "content" : f"Generate a specific cover letter based on the above. Generate the response and include appropriate spacing between the paragraph text"}
-            ]
-    
-    response_out = generator(prompt, max_length=2000, num_return_sequences=1)[0]['generated_text']
-    tokenized_chat = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt")
-    
-    st.write(response_out)
+# if st.button("Generate Cover Letter"):
+    with st.spinner("Writing..."):
+        try:
+            # Tokenizer for splitting into manageable chunks
+            tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
+
+            # Input preparation
+            ARTICLE = f"You will need to generate a cover letter based on specific resume and a job description,
+                        My resume text: {res_text},
+                        The job description is: {job_desc},
+                        The candidate's name to include on the cover letter: {user_name},
+                        The job title/role : {role},
+                        The hiring manager is: {manager},
+                        How you heard about the opportunity: {referral},
+                        The company to which you are generating the cover letter for: {company},
+                        The cover letter should have three content paragraphs.
+                        In the first paragraph focus on the following: you will convey who you are, what position you are interested in, and where you heard
+                        about it, and summarize what you have to offer based on the above resume,
+                        In the second paragraph focus on why the candidate is a great fit drawing parallels between the experience included in the resume 
+                        and the qualifications on the job description.
+                        In the 3RD PARAGRAPH: Conclusion
+                        Restate your interest in the organization and/or job and summarize what you have to offer and thank the reader for their time and consideration.
+                        note that contact information may be found in the included resume text and use and/or summarize specific resume context for the letter
+                        Use {user_name} as the candidate,
+                        Generate a specific cover letter based on the above. Generate the response and include appropriate spacing between the paragraph text"}
+
+            # Chunk input text if it's too long
+            max_input_tokens = 1024  # BART's token limit for input and output
+            chunks = chunkerize(ARTICLE, max_input_tokens - 200, tokenizer)
+
+            # Response in chunks
+            response = ""
+            for chunk in chunks:
+                chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
+                summarized = generator(chunk_text, max_length=200, min_length=50, do_sample=False)
+                response += summarized[0]["summary_text"] + " "
+
+            # Display the result
+            st.subheader("Cover Letter")
+            st.write(response.strip())
+            
+            # Download a txt file
+            st.download_button('Download', response)
+        except Exception as e:
+            st.error(f"Error in generation of cover letter: {e}")
 
 
-    # Download a txt file
-    st.download_button('Download', response_out)
