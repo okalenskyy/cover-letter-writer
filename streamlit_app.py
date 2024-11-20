@@ -62,24 +62,26 @@ if submitted:
             tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
 
             # Input preparation
-            ARTICLE = f"You will need to generate a cover letter based on specific resume and a job description,
-                        My resume text: {res_text},
-                        The job description is: {job_desc},
-                        The candidate's name to include on the cover letter: {user_name},
-                        The job title/role : {role},
-                        The hiring manager is: {manager},
-                        How you heard about the opportunity: {referral},
-                        The company to which you are generating the cover letter for: {company},
-                        The cover letter should have three content paragraphs.
-                        In the first paragraph focus on the following: you will convey who you are, what position you are interested in, and where you heard
-                        about it, and summarize what you have to offer based on the above resume,
-                        In the second paragraph focus on why the candidate is a great fit drawing parallels between the experience included in the resume 
-                        and the qualifications on the job description.
-                        In the 3RD PARAGRAPH: Conclusion
-                        Restate your interest in the organization and/or job and summarize what you have to offer and thank the reader for their time and consideration.
-                        note that contact information may be found in the included resume text and use and/or summarize specific resume context for the letter
-                        Use {user_name} as the candidate,
-                        Generate a specific cover letter based on the above. Generate the response and include appropriate spacing between the paragraph text"}
+            ARTICLE = f"I am applying for the position of {job_desc} at {company}. {res_text}"
+
+            # ARTICLE = f"You will need to generate a cover letter based on specific resume and a job description,
+            #             My resume text: {res_text},
+            #             The job description is: {job_desc},
+            #             The candidate's name to include on the cover letter: {user_name},
+            #             The job title/role : {role},
+            #             The hiring manager is: {manager},
+            #             How you heard about the opportunity: {referral},
+            #             The company to which you are generating the cover letter for: {company},
+            #             The cover letter should have three content paragraphs.
+            #             In the first paragraph focus on the following: you will convey who you are, what position you are interested in, and where you heard
+            #             about it, and summarize what you have to offer based on the above resume,
+            #             In the second paragraph focus on why the candidate is a great fit drawing parallels between the experience included in the resume 
+            #             and the qualifications on the job description.
+            #             In the 3RD PARAGRAPH: Conclusion
+            #             Restate your interest in the organization and/or job and summarize what you have to offer and thank the reader for their time and consideration.
+            #             note that contact information may be found in the included resume text and use and/or summarize specific resume context for the letter
+            #             Use {user_name} as the candidate,
+            #             Generate a specific cover letter based on the above. Generate the response and include appropriate spacing between the paragraph text"}
 
             # Chunk input text if it's too long
             max_input_tokens = 1024  # BART's token limit for input and output
