@@ -38,7 +38,7 @@ res_text = st.text_input('CV')
 
 #Additional CV information
 with st.form('input_form'):
-    job_desc = st.text_input('Pasted job description')
+    job_desc = st.text_input('Job description')
     user_name = st.text_input('Your name')
     company = st.text_input('Company name')
     manager = st.text_input('Hiring manager')
@@ -74,7 +74,7 @@ if submitted:
             response = ""
             for chunk in chunks:
                 chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
-                summarized = generator(chunk_text, max_length=200, min_length=50, do_sample=False)
+                summarized = generator(chunk_text, max_length=500, min_length=50, do_sample=False)
                 response += summarized[0]["summary_text"] + " "
 
             # Display the result
