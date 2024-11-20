@@ -1,13 +1,7 @@
-# import streamlit as st
-# from openai import OpenAI
-
-# import json
-# import requests
-# import time
-# import cv2
 
 import streamlit as st
 import torch
+from transformers import AutoTokenizer
 from transformers import pipeline
 import openai as ai
 from PyPDF2 import PdfReader
@@ -15,20 +9,14 @@ from PyPDF2 import PdfReader
 
 # Show title and description.
 st.title("Cover letter Agent")
-# st.write(
-#      "To use this app, you need to provide an OpenAI API key, which you can get [here](https://). "
-#  )
 
-#1 Load the text generation model from Hugging Face
-generator = pipeline('text-generation', model='EleutherAI/gpt-neo-2.7B')
+# Set Tokenizer
+tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-2.7B")
 
+# Load the text generation model from Hugging Face
+generator = pipeline('text-generation', model='EleutherAI/gpt-neo-2.7B', tokenizer = tokenizer)
 
-#####--
-
-# Set your OpenAI API key
-# ai.api_key = st.text_input("Tocken", type="password")
-
-#CV input
+# CV input
 res_format = st.radio(
     "Do you want to upload or paste your CV",
     ('Upload', 'Paste'))
@@ -56,60 +44,40 @@ with st.form('input_form'):
 #Set model
 if submitted:
     prompt = [
-            {"role": "user", "content": f"You will need to generate a cover letter based on specific resume and a job description"},
-            {"role": "user", "content": f"My resume text: {res_text}"},
-            # ... (include other user messages)
-        ]
+                {"role": "user", "content" : f"You will need to generate a cover letter based on specific resume and a job description"},
+                {"role": "user", "content" : f"My resume text: {res_text}"},
+                {"role": "user", "content" : f"The job description is: {job_desc}"},
+                {"role": "user", "content" : f"The candidate's name to include on the cover letter: {user_name}"},
+                {"role": "user", "content" : f"The job title/role : {role}"},
+                {"role": "user", "content" : f"The hiring manager is: {manager}"},
+                {"role": "user", "content" : f"How you heard about the opportunity: {referral}"},
+                {"role": "user", "content" : f"The company to which you are generating the cover letter for: {company}"},
+                {"role": "user", "content" : f"The cover letter should have three content paragraphs"},
+                {"role": "user", "content" : f""" 
+                In the first paragraph focus on the following: you will convey who you are, what position you are interested in, and where you heard
+                about it, and summarize what you have to offer based on the above resume
+                """},
+                    {"role": "user", "content" : f""" 
+                In the second paragraph focus on why the candidate is a great fit drawing parallels between the experience included in the resume 
+                and the qualifications on the job description.
+                """},
+                        {"role": "user", "content" : f""" 
+                In the 3RD PARAGRAPH: Conclusion
+                Restate your interest in the organization and/or job and summarize what you have to offer and thank the reader for their time and consideration.
+                """},
+                {"role": "user", "content" : f""" 
+                note that contact information may be found in the included resume text and use and/or summarize specific resume context for the letter
+                    """},
+                {"role": "user", "content" : f"Use {user_name} as the candidate"},
+                
+                {"role": "user", "content" : f"Generate a specific cover letter based on the above. Generate the response and include appropriate spacing between the paragraph text"}
+            ]
     
     response_out = generator(prompt, max_length=2000, num_return_sequences=1)[0]['generated_text']
+    tokenized_chat = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt")
+    
     st.write(response_out)
 
 
-
-# if submitted:
-#     completion = ai.ChatCompletion.create(
-#         model="gpt-3.5-turbo",
-#         temperature=ai_temp,
-#         messages=[
-#             {"role": "user", "content": f"You will need to generate a cover letter based on specific resume and a job description"},
-#             {"role": "user", "content": f"My resume text: {res_text}"},
-#             # ... (include other user messages)
-#         ]
-#     )
-#     response_out = completion['choices'][0]['message']['content']
-#     st.write(response_out)
-
     # Download a txt file
-    st.download_button('Download the cover_letter', response_out)
-
-
-
-
-
-# if not ai.api_key:
-#     st.info("Please add your tocken to continue.", icon="🗝️")
-# else:
-    
-#     headers = {"Authorization": f"Bearer {token_access}"}
-#     API_URL = "https://api-inference.huggingface.co/models/facebook/detr-resnet-50"
-
-#     if uploaded_file and question:
-
-#         # Process the uploaded file and question.
-#         document = uploaded_file.read().decode()
-#         messages = [
-#             {
-#                 "role": "user",
-#                 "content": f"Here's a document: {document} \n\n---\n\n {question}",
-#             }
-#         ]
-
-#         # Generate an answer using the OpenAI API.
-#         stream = client.chat.completions.create(
-#             model="gpt-3.5-turbo",
-#             messages=messages,
-#             stream=True,
-#         )
-
-#         # Stream the response to the app using `st.write_stream`.
-#         st.write_stream(stream)
+    st.download_button('Download', response_out)
