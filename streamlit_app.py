@@ -24,18 +24,18 @@ except Exception as e:
     st.error(f"Model can not be loaded. Error: {e}")
 
 # CV input
-res_format = st.radio(
-    "Do you want to upload or paste your CV",
-    ('Upload', 'Paste'))
-if res_format == 'Upload':
-    res_file = st.file_uploader(' Upload your CV in pdf format')
-    if res_file:
-        pdf_reader = PdfReader(res_file)
-        res_text = ""
-        for page in pdf_reader.pages:
-            res_text += page.extract_text()
-else:
-    res_text = st.text_input('Pasted CV elements')
+# res_format = st.radio(
+#     "Do you want to upload or paste your CV",
+#     ('Upload', 'Paste'))
+# if res_format == 'Upload':
+#     res_file = st.file_uploader(' Upload your CV in pdf format')
+#     if res_file:
+#         pdf_reader = PdfReader(res_file)
+#         res_text = ""
+#         for page in pdf_reader.pages:
+#             res_text += page.extract_text()
+# else:
+res_text = st.text_input('CV')
 
 #Additional CV information
 with st.form('input_form'):
