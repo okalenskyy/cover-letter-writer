@@ -1,7 +1,7 @@
 
 import streamlit as st
 import torch
-import os
+# import os
 from transformers import AutoTokenizer
 from transformers import pipeline
 import openai as ai
@@ -15,8 +15,8 @@ def chunkerize(text, max_tokens, tokenizer):
     return [tokens[i: i + max_tokens] for i in range(0, len(tokens), max_tokens)]
 
 
-st.info("Please input your API key to continue.", icon="🗝️")
-os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
+# st.info("Please input your API key to continue.", icon="🗝️")
+# os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
 
 # Set Tokenizer
 tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-2.7B")
