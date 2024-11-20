@@ -18,8 +18,6 @@ def chunkerize(text, max_tokens, tokenizer):
 # st.info("Please input your API key to continue.", icon="🗝️")
 # os.environ["HUGGING_FACE_HUB_TOKEN"] = st.text_input("API Key", type="password")
 
-# Set Tokenizer
-tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-2.7B")
 
 # Load the text generation model from Hugging Face
 try: 
@@ -60,7 +58,6 @@ if submitted:
         try:
             # Tokenizer for splitting into manageable chunks
             tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
-
             # Input preparation
             ARTICLE = f"I am applying for the position of {job_desc} at {company}. {res_text}"
 
