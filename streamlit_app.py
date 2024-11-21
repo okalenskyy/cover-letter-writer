@@ -85,6 +85,7 @@ if submitted:
             # Display the result
             st.subheader("Cover Letter")
             st.write(response.strip())
+            st.write(response)
             
             # Download a txt file
             st.download_button('Download', response)
