@@ -4,12 +4,6 @@ import openai as ai
 from PyPDF2 import PdfReader
 from openai import ChatCompletion
 
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
-    ChatCompletion.api_key = openai_api_key
 
 st.markdown("""
 # 📝 AI-Powered Cover Letter Generator
@@ -22,6 +16,12 @@ Generate a cover letter. All you need to do is:
 """
 )
 
+openai_api_key = st.text_input("OpenAI API Key", type="password")
+
+if not openai_api_key:
+    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
+else:
+    ChatCompletion.api_key = openai_api_key
 
 # radio for upload or copy paste option         
 res_format = st.radio(
