@@ -81,7 +81,7 @@ if submitted:
                 chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
                 summarized = generator(chunk_text, max_length=500, min_length=50, do_sample=False)
                 # response += summarized[0]["summary_text"] + " "
-                response += summarized
+                response += summarized[0]+" "
 
             # Display the result
             st.subheader("Cover Letter")
