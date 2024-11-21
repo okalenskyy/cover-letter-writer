@@ -113,7 +113,7 @@ if submitted:
         
         # 
         # response_out = completion['choices'][0]['message']['content']
-        response_out = complerion.choices[0].message.content
+        response_out = completion.choices[0].message.content
     
         st.write(response_out)
 
