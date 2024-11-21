@@ -3,6 +3,7 @@ import os
 import openai as ai
 from PyPDF2 import PdfReader
 from openai import ChatCompletion
+from openai import OpenAI
 
 
 st.markdown("""
@@ -21,7 +22,7 @@ openai_api_key = st.text_input("OpenAI API Key", type="password")
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
 else:
-    ChatCompletion.api_key = openai_api_key
+    client = OpenAI(api_key=openai_api_key)
 
 # radio for upload or copy paste option         
 res_format = st.radio(
@@ -72,7 +73,8 @@ if submitted:
         # note that the turbo model is not available for the free tier
 
 
-        completion = ChatCompletion.create(
+        # completion = ChatCompletion.create(
+        completion = client.chat.completions.create(
         
         #model="gpt-3.5-turbo-16k", 
         model = "gpt-3.5-turbo-1106",
