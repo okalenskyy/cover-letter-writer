@@ -94,7 +94,7 @@ if submitted:
               st.error(f"An error in writing occurred: {e}")   
 
         # include an option to download a txt file
-        st.download_button('Download the cover_letter', response_out)
+        st.download_button('Download', response_out)
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
