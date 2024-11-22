@@ -53,7 +53,8 @@ if submitted:
     try:            
         completion = client.chat.completions.create(
         
-        model = "gpt-3.5-turbo-1106",
+        # model = "gpt-3.5-turbo-1106",
+        model = "gpt-4",
         temperature=creativity,
         messages = [
             {"role": "user", "content" : f"I want you to act as an AI cover letter assistant. Compose a professional cover letter demonstrating how my abilities and experience align with the requirements."},
