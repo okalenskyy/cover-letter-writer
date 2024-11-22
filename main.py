@@ -46,7 +46,7 @@ with st.form('input_form'):
     manager = st.text_input('Hiring manager')
     role = st.text_input('Job title/role')
     referral = st.text_input('Source of information')
-    style = st.selectbox('Cover Letter style', ['Conversational','Persuasive','Non-dramatic','in StoryBrand Framework'])
+    style = st.selectbox('Cover Letter style', ['Conversational','Persuasive','Non-dramatic','Sarcastic','Humorous','Playful','in StoryBrand Framework'])
     
     submitted = st.form_submit_button("Generate Cover Letter")
 
