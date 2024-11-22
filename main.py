@@ -10,8 +10,9 @@ st.markdown("""
 # Orwell - Cover Letter writer
 """
 )
-
-openai_api_key = st.text_input("OpenAI API Key", type="password")
+with st.expander("OpenAI Credentials"):
+    openai_api_key = st.text_input("OpenAI API Key", type="password")
+    ai_temp = st.number_input('AI Temperature (0.0-1.0) Input how creative the API can be',value=.99)
 
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
@@ -23,13 +24,11 @@ res_format = st.radio(
     "Do you want to upload or paste your resume/key experience",
     ('Upload', 'Paste'))
 
-
 if res_format == 'Upload':
     # upload_resume
         res_file = st.file_uploader('📁 Upload your resume in pdf format')
         if res_file:
             pdf_reader = PdfReader(res_file)
-
 
             # Collect text from pdf
             res_text = ""
@@ -47,7 +46,7 @@ with st.form('input_form'):
     manager = st.text_input('Hiring manager')
     role = st.text_input('Job title/role')
     referral = st.text_input('How did you find out about this opportunity?')
-    ai_temp = st.number_input('AI Temperature (0.0-1.0) Input how creative the API can be',value=.99)
+    
 
 
     # submit button
