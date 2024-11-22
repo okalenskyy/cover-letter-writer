@@ -53,13 +53,12 @@ if submitted:
     try:            
         completion = client.chat.completions.create(
         
-        # model = "gpt-3.5-turbo-1106",
         model = "gpt-4",
         temperature=creativity,
         messages = [
-            {"role": "user", "content" : f"I want you to act as an AI cover letter assistant. Compose a professional cover letter demonstrating how my abilities and experience align with the requirements."},
+            {"role": "user", "content" : f"I want you to act as an AI cover letter assistant. Compose a professional cover letter demonstrating how candidate's abilities and experience align with the requirements."},
             {"role": "user", "content" : f"You will need to generate a cover letter based on specific resume and a job description"},
-            {"role": "user", "content" : f"My resume text: {res_text}"},
+            {"role": "user", "content" : f"Resume text: {res_text}"},
             {"role": "user", "content" : f"The job description is: {job_desc}"},
             {"role": "user", "content" : f"The candidate's name to include on the cover letter: {user_name}"},
             {"role": "user", "content" : f"The job title/role : {role}"},
@@ -76,8 +75,8 @@ if submitted:
             and the qualifications on the job description.
             """},
                     {"role": "user", "content" : f""" 
-            In the 3RD PARAGRAPH: Conclusion
-            Restate your interest in the organization and/or job and summarize what you have to offer and thank the reader for their time and consideration.
+            In the third paragraph: Conclusion
+            Restate candidat's interest in the organization and/or job and summarize what candidate have to offer and thank the reader for their time and consideration.
             """},
             {"role": "user", "content" : f""" 
             note that contact information may be found in the included resume text and use and/or summarize specific resume context for the letter
