@@ -7,13 +7,7 @@ from openai import OpenAI
 
 
 st.markdown("""
-# 📝 AI-Powered Cover Letter Generator
-
-
-Generate a cover letter. All you need to do is:
-1. Upload your resume or copy your resume/experiences
-2. Paste a relevant job description
-3. Input some other relevant user/job data
+# Orwell - Cover Letter writer
 """
 )
 
@@ -63,20 +57,8 @@ with st.form('input_form'):
 # if the form is submitted run the openai completion   
 if submitted:
     try:            
-
-
-        # note that the ChatCompletion is used as it was found to be more effective to produce good results
-        # using just Completion often resulted in exceeding token limits
-        # according to https://platform.openai.com/docs/models/gpt-3-5
-        # Our most capable and cost effective model in the GPT-3.5 family is gpt-3.5-turbo which has been optimized for chat 
-        # but works well for traditional completions tasks as well.
-        # note that the turbo model is not available for the free tier
-
-
-        # completion = ChatCompletion.create(
         completion = client.chat.completions.create(
         
-        #model="gpt-3.5-turbo-16k", 
         model = "gpt-3.5-turbo-1106",
         temperature=ai_temp,
         messages = [
@@ -99,7 +81,7 @@ if submitted:
             """},
                     {"role": "user", "content" : f""" 
             In the 3RD PARAGRAPH: Conclusion
-        Restate your interest in the organization and/or job and summarize what you have to offer and thank the reader for their time and consideration.
+            Restate your interest in the organization and/or job and summarize what you have to offer and thank the reader for their time and consideration.
             """},
             {"role": "user", "content" : f""" 
             note that contact information may be found in the included resume text and use and/or summarize specific resume context for the letter
@@ -109,13 +91,12 @@ if submitted:
             {"role": "user", "content" : f"Generate a specific cover letter based on the above. Generate the response and include appropriate spacing between the paragraph text"}
         ]
         )
-        #st.write(completion)
-        
-        # 
-        # response_out = completion['choices'][0]['message']['content']
-        response_out = completion.choices[0].message.content
-    
-        st.write(response_out)
+        with st.spinner("Orwell writing cover letter for you..."):
+            try:
+              response_out = completion.choices[0].message.content
+              st.write(response_out)
+            except Exception as e: 
+              st.error(f"An error in writing occurred: {e}")   
 
 
         # include an option to download a txt file
