@@ -12,7 +12,8 @@ st.markdown("""
 )
 with st.expander("OpenAI Credentials"):
     openai_api_key = st.text_input("OpenAI API Key", type="password")
-    ai_temp = st.number_input('AI Temperature (0.0-1.0) Input how creative the API can be',value=.99)
+    ai_temp = st.slider('Creativity Level', min_value=0.0, max_value=1.0)
+    # ai_temp = st.number_input('Creativity Level(0.0-1.0)',value=.99)
 
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
