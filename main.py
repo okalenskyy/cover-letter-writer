@@ -11,14 +11,13 @@ st.markdown("""
 """
 )
 with st.expander("OpenAI Credentials"):
-    openai_api_key = st.text_input("OpenAI API Key", type="password")
-    ai_temp = st.slider('Creativity Level', min_value=0.0, max_value=1.0)
-    # ai_temp = st.number_input('Creativity Level(0.0-1.0)',value=.99)
+    key = st.text_input("OpenAI API Key", type="password")
+    creativity = st.slider('Creativity Level', min_value=0.0, max_value=1.0, value=0.9)
 
-if not openai_api_key:
+if not key:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
 else:
-    client = OpenAI(api_key=openai_api_key)
+    client = OpenAI(api_key=key)
 
 # radio for upload or copy paste option         
 res_format = st.radio(
@@ -46,23 +45,23 @@ with st.form('input_form'):
     company = st.text_input('Company name')
     manager = st.text_input('Hiring manager')
     role = st.text_input('Job title/role')
-    referral = st.text_input('How did you find out about this opportunity?')
+    referral = st.text_input('Source of information')
+    size = st.number_input('Size of Cover Letter')
+    size = st.selectbox('Cover Letter style', ['Conversational','Persuasive','Non-dramatic','in StoryBrand Framework'])
     
-
-
-    # submit button
     submitted = st.form_submit_button("Generate Cover Letter")
 
-
-# if the form is submitted run the openai completion   
 if submitted:
     try:            
         completion = client.chat.completions.create(
         
         model = "gpt-3.5-turbo-1106",
-        temperature=ai_temp,
+        temperature=creativity,
         messages = [
+            {"role": "user", "content" : f"I want you to act as an AI cover letter assistant. Compose a professional cover letter demonstrating how my abilities and experience align with the requirements."},
             {"role": "user", "content" : f"You will need to generate a cover letter based on specific resume and a job description"},
+            {"role": "user", "content" : f"Please, write {style} cover letter"},
+            {"role": "user", "content" : f"The cover letter must be no more than {size} words"},
             {"role": "user", "content" : f"My resume text: {res_text}"},
             {"role": "user", "content" : f"The job description is: {job_desc}"},
             {"role": "user", "content" : f"The candidate's name to include on the cover letter: {user_name}"},
@@ -97,7 +96,6 @@ if submitted:
               st.write(response_out)
             except Exception as e: 
               st.error(f"An error in writing occurred: {e}")   
-
 
         # include an option to download a txt file
         st.download_button('Download the cover_letter', response_out)
