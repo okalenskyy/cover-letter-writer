@@ -7,7 +7,7 @@ from openai import OpenAI
 
 
 st.markdown("""
-# Orwell - Cover Letter writer
+# Mr. Orwell - The Cover Letter writer
 """
 )
 with st.expander("OpenAI Credentials"):
@@ -46,7 +46,6 @@ with st.form('input_form'):
     manager = st.text_input('Hiring manager')
     role = st.text_input('Job title/role')
     referral = st.text_input('Source of information')
-    size = st.number_input('Size of Cover Letter')
     style = st.selectbox('Cover Letter style', ['Conversational','Persuasive','Non-dramatic','in StoryBrand Framework'])
     
     submitted = st.form_submit_button("Generate Cover Letter")
@@ -61,7 +60,6 @@ if submitted:
             {"role": "user", "content" : f"I want you to act as an AI cover letter assistant. Compose a professional cover letter demonstrating how my abilities and experience align with the requirements."},
             {"role": "user", "content" : f"You will need to generate a cover letter based on specific resume and a job description"},
             {"role": "user", "content" : f"Please, write {style} cover letter"},
-            {"role": "user", "content" : f"The cover letter must be no more than {size} words"},
             {"role": "user", "content" : f"My resume text: {res_text}"},
             {"role": "user", "content" : f"The job description is: {job_desc}"},
             {"role": "user", "content" : f"The candidate's name to include on the cover letter: {user_name}"},
@@ -90,7 +88,7 @@ if submitted:
             {"role": "user", "content" : f"Generate a specific cover letter based on the above. Generate the response and include appropriate spacing between the paragraph text"}
         ]
         )
-        with st.spinner("Orwell writing cover letter for you..."):
+        with st.spinner("Mr. Orwell writing cover letter for you..."):
             try:
               response_out = completion.choices[0].message.content
               st.write(response_out)
